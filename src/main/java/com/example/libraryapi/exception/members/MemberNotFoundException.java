@@ -1,7 +1,7 @@
 package com.example.libraryapi.exception.members;
 
-public class MembersNotFoundException extends RuntimeException {
-    public MembersNotFoundException(String message) {
+public class MemberNotFoundException extends RuntimeException {
+    public MemberNotFoundException(String message) {
         super(message);
     }
 }
