@@ -4,11 +4,11 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.example.libraryapi.exception.BookInUseException;
-import com.example.libraryapi.exception.BookNotFoundException;
-import com.example.libraryapi.exception.DuplicateIsbnException;
-import com.example.libraryapi.exception.InvalidBookException;
-import com.example.libraryapi.exception.InvalidSortByException;
+import com.example.libraryapi.exception.books.BookInUseException;
+import com.example.libraryapi.exception.books.BookNotFoundException;
+import com.example.libraryapi.exception.books.DuplicateIsbnException;
+import com.example.libraryapi.exception.books.InvalidBookException;
+import com.example.libraryapi.exception.books.InvalidSortByException;
 import com.example.libraryapi.model.Book;
 import com.example.libraryapi.model.Genre;
 import com.example.libraryapi.repository.BookRepository;
