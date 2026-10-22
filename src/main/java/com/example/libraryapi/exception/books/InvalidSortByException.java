@@ -1,4 +1,4 @@
-package com.example.libraryapi.exception;
+package com.example.libraryapi.exception.books;
 
 public class InvalidSortByException extends IllegalArgumentException {
     public InvalidSortByException(String message) {
