@@ -2,20 +2,25 @@ package com.example.libraryapi.service;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.example.libraryapi.exception.members.DuplicateEmailException;
 import com.example.libraryapi.exception.members.InvalidMemberException;
 import com.example.libraryapi.exception.members.MemberNotFoundException;
 import com.example.libraryapi.model.Member;
+import com.example.libraryapi.notification.NotificationSender;
 import com.example.libraryapi.repository.MemberRepository;
 
 @Service 
 public class MemberService {
     private final MemberRepository memberRepository;
 
-    public MemberService(MemberRepository memberRepository) {
+    private final NotificationSender notificationSender;
+
+    public MemberService(MemberRepository memberRepository, @Qualifier("ConsoleNotificationSender") NotificationSender notificationSender) {
         this.memberRepository = memberRepository;
+        this.notificationSender = notificationSender;
     }
 
     public Member getMemberById(Long id) {
@@ -39,6 +44,12 @@ public class MemberService {
         member.setInscriptionDate(java.time.LocalDate.now());
         // Normalize email to lowercase
         member.setEmail(member.getEmail().trim().toLowerCase());
+
+        // Send notification
+        this.notificationSender.sendNotification(
+            "Welcome to the library, " + member.getName() + "! Your registration is successful.",
+            member.getEmail()
+        );
 
         return this.memberRepository.save(member);
     }
