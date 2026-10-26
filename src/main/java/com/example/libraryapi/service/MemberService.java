@@ -18,7 +18,7 @@ public class MemberService {
 
     private final NotificationSender notificationSender;
 
-    public MemberService(MemberRepository memberRepository, @Qualifier("ConsoleNotificationSender") NotificationSender notificationSender) {
+    public MemberService(MemberRepository memberRepository, @Qualifier("consoleNotificationSender") NotificationSender notificationSender) {
         this.memberRepository = memberRepository;
         this.notificationSender = notificationSender;
     }
@@ -45,13 +45,15 @@ public class MemberService {
         // Normalize email to lowercase
         member.setEmail(member.getEmail().trim().toLowerCase());
 
+        member = this.memberRepository.save(member);
+
         // Send notification
         this.notificationSender.sendNotification(
             "Welcome to the library, " + member.getName() + "! Your registration is successful.",
             member.getEmail()
         );
 
-        return this.memberRepository.save(member);
+        return member;
     }
 
     private void validateMember(Member member) {

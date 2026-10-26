@@ -97,6 +97,10 @@ public class LoanService {
             throw new LoanIsAlreadyReturnedException("Loan has already been returned");
         }
 
+        // Verify member exists else throw exception
+        Member member = this.memberRepository.findById(loan.getMemberId())
+                .orElseThrow(() -> new MemberNotFoundException("Member not found"));  
+
         // Get book and increment the available copies
         Book book = this.bookRepository.findById(loan.getBookId())
                 .orElseThrow(() -> new BookNotFoundException("Book not found"));
@@ -106,10 +110,6 @@ public class LoanService {
         // Save return date
         loan.setReturnedDate(java.time.LocalDate.now());
         this.loanRepository.save(loan);
-
-        // Verify member exists else throw exception
-        Member member = this.memberRepository.findById(loan.getMemberId())
-                .orElseThrow(() -> new MemberNotFoundException("Member not found"));   
 
         // Send notification
         this.notificationSender.sendNotification(
