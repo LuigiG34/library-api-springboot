@@ -44,5 +44,10 @@ public class InMemoryLoanRepository implements LoanRepository {
                .filter(loan -> loan.getBookId().equals(bookId) && loan.isOngoing())
                .collect(Collectors.toList());
     }
+
+    @Override 
+    public List<Loan> findAll() {
+        return loans.values().stream().collect(Collectors.toList());
+    }
     
 }

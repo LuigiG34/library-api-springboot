@@ -14,4 +14,6 @@ public interface LoanRepository {
     List<Loan> findLoansByMemberId(Long memberId);
 
     List<Loan> findLoansByBookId(Long bookId);
+
+    List<Loan> findAll();
 }
