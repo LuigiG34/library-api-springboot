@@ -1,5 +1,7 @@
 package com.example.libraryapi.notification;
 
-public class NotificationSender {
-    
+public interface NotificationSender {
+
+    void sendNotification(String message, String recipientEmail);
+
 }
