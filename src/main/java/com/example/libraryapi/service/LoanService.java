@@ -6,10 +6,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.example.libraryapi.model.Loan;
+import com.example.libraryapi.model.Member;
 import com.example.libraryapi.model.Book;
 import com.example.libraryapi.repository.LoanRepository;
 import com.example.libraryapi.repository.BookRepository;
 import com.example.libraryapi.repository.MemberRepository;
+import com.example.libraryapi.notification.NotificationSender;
 import com.example.libraryapi.exception.books.BookInUseException;
 import com.example.libraryapi.exception.books.BookNotFoundException;
 import com.example.libraryapi.exception.loans.LoanIsAlreadyReturnedException;
@@ -23,12 +25,16 @@ public class LoanService {
     private final LoanRepository loanRepository;
     private final BookRepository bookRepository;
     private final MemberRepository memberRepository;
+
+    private final NotificationSender notificationSender;
+
     private final int maxLoansPerMember;
 
-    public LoanService(LoanRepository loanRepository, BookRepository bookRepository, MemberRepository memberRepository, @Value("${library.maxLoansPerMember}") int maxLoansPerMember) {
+    public LoanService(LoanRepository loanRepository, BookRepository bookRepository, MemberRepository memberRepository, NotificationSender notificationSender, @Value("${library.maxLoansPerMember}") int maxLoansPerMember) {
         this.loanRepository = loanRepository;
         this.bookRepository = bookRepository;
         this.memberRepository = memberRepository;
+        this.notificationSender = notificationSender;
         this.maxLoansPerMember = maxLoansPerMember;
     }
 
@@ -38,7 +44,7 @@ public class LoanService {
                 .orElseThrow(() -> new BookNotFoundException("Book not found"));
 
         // Verify member exists else throw exception
-        this.memberRepository.findById(memberId)
+        Member member = this.memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberNotFoundException("Member not found"));   
         
         // Verify at least 1 book is available else throw exception conflict
@@ -73,6 +79,12 @@ public class LoanService {
         book.decrementAvailableCopies();
         this.bookRepository.save(book);
 
+        // Send notification
+        this.notificationSender.sendNotification(
+            "You have successfully borrowed the book: " + book.getTitle() + ", due date: " + loan.getReturnDate(),
+            member.getEmail()
+        );
+
         return loan;
     }
     
@@ -94,6 +106,16 @@ public class LoanService {
         // Save return date
         loan.setReturnedDate(java.time.LocalDate.now());
         this.loanRepository.save(loan);
+
+        // Verify member exists else throw exception
+        Member member = this.memberRepository.findById(loan.getMemberId())
+                .orElseThrow(() -> new MemberNotFoundException("Member not found"));   
+
+        // Send notification
+        this.notificationSender.sendNotification(
+            "You have successfully returned the book: " + book.getTitle(),
+            member.getEmail()
+        );
 
         return loan;
     }
