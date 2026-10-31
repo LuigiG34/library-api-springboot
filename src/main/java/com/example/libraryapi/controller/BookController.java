@@ -87,7 +87,7 @@ public class BookController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<BookResponse> updateBook(@PathVariable("id") Long id, @RequestBody UpdateBookRequest bookRequest) {
+    public BookResponse updateBook(@PathVariable("id") Long id, @RequestBody UpdateBookRequest bookRequest) {
 
         // Convert Request to Entity
         Book book = new Book(
@@ -103,17 +103,7 @@ public class BookController {
             
         Book savedBook = this.bookService.updateBook(id, book);
             
-        BookResponse bookResponse = this.toResponse(savedBook);
-
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-            .path("/{id}")
-            .buildAndExpand(savedBook.getId())
-            .toUri();
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(location);
-
-        return new ResponseEntity<>(bookResponse, headers, HttpStatus.OK);
+        return this.toResponse(savedBook);
     }
 
     @DeleteMapping("/{id}")
