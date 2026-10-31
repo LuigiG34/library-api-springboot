@@ -39,7 +39,7 @@ public class MemberController {
     @ResponseStatus(HttpStatus.OK)
     public List<MemberResponse> getMembers() {
         return this.memberService.getAllMembers().stream()
-                .map(member -> this.convertMemberToResponseDTO(member))
+                .map(member -> this.toResponse(member))
                 .collect(Collectors.toList());
     }
 
@@ -47,7 +47,7 @@ public class MemberController {
     @ResponseStatus(HttpStatus.OK)
     public MemberResponse getMemberById(@PathVariable("id") Long id) {
         Member member = this.memberService.getMemberById(id);
-        return this.convertMemberToResponseDTO(member);
+        return this.toResponse(member);
     }
 
     @PostMapping
@@ -62,7 +62,7 @@ public class MemberController {
 
         Member savedMember = this.memberService.createMember(member);
 
-        MemberResponse memberResponse = this.convertMemberToResponseDTO(savedMember);
+        MemberResponse memberResponse = this.toResponse(savedMember);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
             .path("/{id}")
@@ -93,7 +93,7 @@ public class MemberController {
                 .collect(Collectors.toList());
     }
 
-    private MemberResponse convertMemberToResponseDTO(Member member) {
+    private MemberResponse toResponse(Member member) {
         return new MemberResponse(
             member.getId(),
             member.getName(),

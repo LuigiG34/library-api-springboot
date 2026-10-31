@@ -46,7 +46,7 @@ public class BookController {
         @RequestParam(required = false) String sort
     ) {
         return this.bookService.getFilteredBooks(genre, author, available, sort).stream()
-                .map(book -> this.convertBookToResponseDTO(book))
+                .map(book -> this.toResponse(book))
                 .collect(Collectors.toList());
     }
 
@@ -54,7 +54,7 @@ public class BookController {
     @ResponseStatus(HttpStatus.OK)
     public BookResponse getBookById(@PathVariable("id") Long id) {
         Book book = this.bookService.getBookById(id);
-        return this.convertBookToResponseDTO(book);
+        return this.toResponse(book);
     }
     
     @PostMapping
@@ -73,7 +73,7 @@ public class BookController {
         
         Book savedBook = this.bookService.createBook(book);
 
-        BookResponse bookResponse = this.convertBookToResponseDTO(savedBook);
+        BookResponse bookResponse = this.toResponse(savedBook);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
             .path("/{id}")
@@ -103,7 +103,7 @@ public class BookController {
             
         Book savedBook = this.bookService.updateBook(id, book);
             
-        BookResponse bookResponse = this.convertBookToResponseDTO(savedBook);
+        BookResponse bookResponse = this.toResponse(savedBook);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
             .path("/{id}")
@@ -122,7 +122,7 @@ public class BookController {
         this.bookService.deleteBook(id);
     }
 
-    private BookResponse convertBookToResponseDTO(Book book) {
+    private BookResponse toResponse(Book book) {
         return new BookResponse(
             book.getId(), 
             book.getIsbn(), 
