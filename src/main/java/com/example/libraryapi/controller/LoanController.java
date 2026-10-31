@@ -45,7 +45,7 @@ public class LoanController {
 
     @GetMapping("/overdue")
     @ResponseStatus(HttpStatus.OK)
-    public List<LoanResponse> getMethodName(@RequestParam String param) {
+    public List<LoanResponse> getAllOverdueLoans(@RequestParam String param) {
         return this.loanService.getOverdueLoans().stream()
                 .map(loan -> this.toResponse(loan))
                 .collect(Collectors.toList());
