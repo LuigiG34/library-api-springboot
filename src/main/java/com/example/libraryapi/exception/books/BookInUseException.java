@@ -1,6 +1,8 @@
 package com.example.libraryapi.exception.books;
 
-public class BookInUseException extends IllegalStateException {
+import com.example.libraryapi.exception.parent.ConflictException;
+
+public class BookInUseException extends ConflictException {
     public BookInUseException(String message) {
         super(message);
     }

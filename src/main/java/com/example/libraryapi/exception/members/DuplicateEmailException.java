@@ -1,6 +1,8 @@
 package com.example.libraryapi.exception.members;
 
-public class DuplicateEmailException extends IllegalStateException {
+import com.example.libraryapi.exception.parent.ConflictException;
+
+public class DuplicateEmailException extends ConflictException {
     public DuplicateEmailException(String message) {
         super(message);
     }

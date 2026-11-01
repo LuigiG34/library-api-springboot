@@ -1,6 +1,8 @@
 package com.example.libraryapi.exception.loans;
 
-public class NumberOfLoansExceededException extends RuntimeException {
+import com.example.libraryapi.exception.parent.ConflictException;
+
+public class NumberOfLoansExceededException extends ConflictException {
     public NumberOfLoansExceededException(String message) {
         super(message);
     }
